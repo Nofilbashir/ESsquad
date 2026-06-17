@@ -191,15 +191,16 @@ export default async function ContributionsPage({
               <TableHead>Member Name</TableHead>
               <TableHead className="hidden sm:table-cell">Phone</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead className="hidden md:table-cell text-right">Amount</TableHead>
               <TableHead className="hidden md:table-cell">Recorded</TableHead>
-              <TableHead className="text-right">Action</TableHead>
+              <TableHead className="text-right w-36">Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {data.rows.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={6}
+                  colSpan={7}
                   className="text-center text-muted-foreground py-10"
                 >
                   No eligible members for this month
@@ -233,6 +234,11 @@ export default async function ContributionsPage({
                       <Badge variant="warning">UNPAID</Badge>
                     )}
                   </TableCell>
+                  <TableCell className="hidden md:table-cell text-right text-sm font-medium">
+                    {contribution?.status === "PAID"
+                      ? formatCurrency(contribution.amount)
+                      : <span className="text-muted-foreground">—</span>}
+                  </TableCell>
                   <TableCell className="hidden md:table-cell text-sm text-muted-foreground">
                     {contribution?.recordedAt
                       ? new Date(contribution.recordedAt).toLocaleDateString(
@@ -247,6 +253,7 @@ export default async function ContributionsPage({
                       month={month}
                       year={year}
                       currentStatus={contribution?.status ?? "UNPAID"}
+                      defaultAmount={data.monthlyFee}
                     />
                   </TableCell>
                 </TableRow>

@@ -5,6 +5,7 @@ export const markPaymentSchema = z.object({
   month: z.number().int().min(1).max(12),
   year: z.number().int().min(2020),
   status: z.enum(["PAID", "UNPAID"]),
+  amount: z.number().min(1).optional(),
 });
 
 export const bulkMarkPaymentSchema = z.object({

@@ -20,6 +20,7 @@ export async function markPayment(data: {
   month: number;
   year: number;
   status: "PAID" | "UNPAID";
+  amount?: number;
 }) {
   const session = await requireAdmin();
   await connectDB();
@@ -27,10 +28,10 @@ export async function markPayment(data: {
   const parsed = markPaymentSchema.safeParse(data);
   if (!parsed.success) return { error: parsed.error.issues[0].message };
 
-  const { memberId, month, year, status } = parsed.data;
+  const { memberId, month, year, status, amount: customAmount } = parsed.data;
 
   const settings = await Settings.findOne().lean() as { monthlyFee?: number } | null;
-  const monthlyFee = settings?.monthlyFee ?? 100;
+  const monthlyFee = customAmount ?? settings?.monthlyFee ?? 100;
 
   const contribution = await Contribution.findOneAndUpdate(
     { memberId, month, year },
