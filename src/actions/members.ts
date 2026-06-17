@@ -184,20 +184,25 @@ export async function skipMemberInQueue(memberId: string) {
   const member = await Member.findById(memberId);
   if (!member || member.queuePosition === null) return { error: "Member not in queue" };
 
-  const lastMember = await Member.findOne({
-    queuePosition: { $ne: null },
-    _id: { $ne: memberId },
-  })
-    .sort({ queuePosition: -1 })
-    .lean() as unknown as { queuePosition: number | null } | null;
-
-  const newPosition = lastMember ? (lastMember.queuePosition ?? 0) + 1 : 1;
   const oldPosition = member.queuePosition;
+
+  // Temporarily remove the member from the queue, shift others up to fill the gap
+  member.queuePosition = null;
+  await member.save();
 
   await Member.updateMany(
     { queuePosition: { $gt: oldPosition }, status: "ACTIVE" },
     { $inc: { queuePosition: -1 } }
   );
+
+  // Re-normalize to eliminate any accumulated gaps, then place skipped member at the end
+  await compactQueuePositions();
+
+  const last = await Member.findOne({ queuePosition: { $ne: null }, status: "ACTIVE" })
+    .sort({ queuePosition: -1 })
+    .lean() as unknown as { queuePosition: number | null } | null;
+
+  const newPosition = last ? (last.queuePosition ?? 0) + 1 : 1;
   member.queuePosition = newPosition;
   await member.save();
 

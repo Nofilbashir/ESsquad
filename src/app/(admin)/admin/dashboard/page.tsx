@@ -70,10 +70,11 @@ async function getDashboardData() {
 
   const paidSet = new Set(paidThisMonth.map((c) => String(c.memberId)));
 
-  const unpaidThisMonth = eligibleMembers
-    .filter((m) => !paidSet.has(String(m._id)))
+  const allUnpaid = eligibleMembers.filter((m) => !paidSet.has(String(m._id)));
+  const unpaidThisMonth = allUnpaid
     .slice(0, 8)
     .map((m) => ({ _id: m._id, memberId: { name: m.name, phone: m.phone }, amount: monthlyFee }));
+  const unpaidCount = allUnpaid.length;
 
   const recentPayments = (await Contribution.find({ status: "PAID" })
     .populate("memberId", "name")
@@ -94,6 +95,7 @@ async function getDashboardData() {
   return {
     stats: { totalMembers, activeMembers: activeMemberCount, totalCollected, totalDistributed, currentBalance, monthlyFee, currentMonth, currentYear },
     unpaidThisMonth,
+    unpaidCount,
     recentPayments,
     nextRecipients,
     recentGiveaways,
@@ -205,6 +207,11 @@ export default async function AdminDashboard() {
             <div className="flex items-center gap-2">
               <AlertCircle className="h-4 w-4 text-amber-500" />
               <span className="font-semibold text-sm">Unpaid — {formatMonth(stats.currentMonth, stats.currentYear)}</span>
+              {data.unpaidCount > 0 && (
+                <span className="inline-flex items-center justify-center h-5 min-w-5 px-1.5 rounded-full bg-amber-100 text-amber-700 text-xs font-bold">
+                  {data.unpaidCount}
+                </span>
+              )}
             </div>
             <Link href="/admin/contributions" className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors">
               View all <ArrowRight className="h-3 w-3" />
@@ -220,7 +227,7 @@ export default async function AdminDashboard() {
                 <p className="text-xs text-muted-foreground mt-1">Every member has paid for {formatMonth(stats.currentMonth, stats.currentYear)}</p>
               </div>
             ) : (
-              <ul>
+              <ul className="max-h-64 overflow-y-auto">
                 {data.unpaidThisMonth.map((c, i) => (
                   <li key={String(c._id)} className={`flex items-center justify-between px-6 py-3.5 ${i < data.unpaidThisMonth.length - 1 ? "border-b" : ""}`}>
                     <div className="flex items-center gap-3 min-w-0">
@@ -259,7 +266,7 @@ export default async function AdminDashboard() {
                 <p className="text-xs text-muted-foreground mt-1">No members are in the giveaway queue yet</p>
               </div>
             ) : (
-              <ul>
+              <ul className="max-h-64 overflow-y-auto">
                 {data.nextRecipients.map((m, i) => (
                   <li key={String(m._id)} className={`flex items-center gap-3 px-6 py-3.5 ${i < data.nextRecipients.length - 1 ? "border-b" : ""}`}>
                     <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${i === 0 ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
