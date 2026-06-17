@@ -13,7 +13,6 @@ import {
   Package,
   BarChart3,
   LogOut,
-  Car,
   Settings,
   ChevronRight,
 } from "lucide-react";
@@ -37,11 +36,11 @@ export default function AdminSidebar() {
       {/* Logo */}
       <div className="flex items-center gap-3 px-5 py-5" style={{ borderBottom: "1px solid var(--sidebar-border)" }}>
         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/20 ring-1 ring-primary/30 flex-shrink-0">
-          <Car className="h-4 w-4 text-primary" />
+          <span className="text-xs font-extrabold text-primary tracking-tight">ES</span>
         </div>
         <div className="min-w-0">
           <p className="text-sm font-semibold leading-tight" style={{ color: "var(--sidebar-foreground)" }}>
-            Community Fund
+            ES Squad Community
           </p>
           <p className="text-[11px] leading-tight mt-0.5" style={{ color: "oklch(0.60 0.01 247)" }}>
             Admin Panel

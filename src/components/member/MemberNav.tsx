@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
-import { Car, LayoutDashboard, User, CreditCard, Gift, LogOut } from "lucide-react";
+import { LayoutDashboard, User, CreditCard, Gift, LogOut } from "lucide-react";
 
 const navItems = [
   { href: "/member/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -23,9 +23,9 @@ export default function MemberNav({ userName }: { userName: string }) {
           {/* Brand */}
           <div className="flex items-center gap-2.5 flex-shrink-0">
             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary shadow-sm shadow-primary/30">
-              <Car className="h-3.5 w-3.5 text-primary-foreground" />
+              <span className="text-[10px] font-extrabold text-primary-foreground tracking-tight">ES</span>
             </div>
-            <span className="font-semibold text-sm text-foreground">Community Fund</span>
+            <span className="font-semibold text-sm text-foreground">ES Squad Community</span>
           </div>
 
           {/* Desktop nav */}

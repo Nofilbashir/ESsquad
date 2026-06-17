@@ -19,8 +19,8 @@ const fontMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Car Community Fund",
-  description: "Community fund management system for car enthusiasts",
+  title: "ES Squad Community",
+  description: "Community fund management for ES Squad",
 };
 
 export default function RootLayout({

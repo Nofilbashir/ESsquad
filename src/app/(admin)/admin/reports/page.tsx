@@ -4,6 +4,7 @@ import Contribution from "@/models/Contribution";
 import Settings, { ISettings } from "@/models/Settings";
 import { calculateOutstanding, formatCurrency, formatMonth, getMonthRange } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import CollectionChart from "./CollectionChart";
 import {
   Table,
   TableBody,
@@ -125,6 +126,23 @@ export default async function ReportsPage() {
           Financial overview and member analytics
         </p>
       </div>
+
+      {/* Monthly Collection Chart */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Monthly Collection</CardTitle>
+          <p className="text-xs text-muted-foreground -mt-1">Expected vs collected over the last {data.monthSummaries.length} months</p>
+        </CardHeader>
+        <CardContent>
+          <CollectionChart
+            data={[...data.monthSummaries].reverse().map((m) => ({
+              label: new Date(m.year, m.month - 1).toLocaleDateString("en-US", { month: "short", year: "2-digit" }),
+              Expected: m.expected,
+              Collected: m.collected,
+            }))}
+          />
+        </CardContent>
+      </Card>
 
       {/* Outstanding payments */}
       <Card>
