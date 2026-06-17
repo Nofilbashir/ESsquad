@@ -25,6 +25,7 @@ const MemberSchema = new mongoose.Schema({
   status: { type: String, default: "ACTIVE" },
 }, { timestamps: true });
 
+
 const ContributionSchema = new mongoose.Schema({
   memberId: mongoose.Schema.Types.ObjectId,
   month: Number,
